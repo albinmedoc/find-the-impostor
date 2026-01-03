@@ -64,33 +64,6 @@ export class PromptEngine {
         },
       },
     },
-    de: {
-      name: "German",
-      culturalNote:
-        "Fokussiere auf universell bekannte Begriffe im deutschsprachigen Raum.",
-      examples: {
-        animals: {
-          word: "Elefant",
-          hints: ["Gedächtnis", "Zirkus", "Groß"],
-        },
-        food: {
-          word: "Pizza",
-          hints: ["Lieferung", "Dreieck", "Jugendlicher"],
-        },
-        objects: {
-          word: "Hammer",
-          hints: ["Richter", "Donner", "Bauen"],
-        },
-        places: {
-          word: "Bibliothek",
-          hints: ["Stille", "Überfällig", "Forschung"],
-        },
-        professions: {
-          word: "Koch",
-          hints: ["Temperatur", "Kreativität", "Weiß"],
-        },
-      },
-    },
   };
 
   private static readonly DIFFICULTY_MODIFIERS = {
