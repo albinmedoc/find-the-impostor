@@ -11,6 +11,32 @@ export interface PromptConfig {
 
 export class PromptEngine {
   private static readonly LANGUAGE_CONFIGS = {
+    sv: {
+      name: "Svenska",
+      culturalNote: "Fokusera på allmänt kända termer i svensktalande länder.",
+      examples: {
+        animals: {
+          word: "elefant",
+          hints: ["minne", "cirkus", "stor"],
+        },
+        food: {
+          word: "pizza",
+          hints: ["hemleverans", "triangel", "tonåring"],
+        },
+        objects: {
+          word: "hammare",
+          hints: ["domare", "åska", "byggarbetsplats"],
+        },
+        places: {
+          word: "bibliotek",
+          hints: ["tystnad", "försenad", "forskning"],
+        },
+        professions: {
+          word: "kock",
+          hints: ["temperatur", "kreativitet", "vit"],
+        },
+      },
+    },
     en: {
       name: "English",
       culturalNote:

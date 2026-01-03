@@ -1,4 +1,36 @@
 export const FALLBACK_WORDS_WITH_HINTS = {
+  sv: {
+    animals: [
+      { word: "elefant", hints: ["stor", "grå", "snabel", "afrika"] },
+      { word: "katt", hints: ["husdjur", "mjau", "päls", "morrhår"] },
+      { word: "lejon", hints: ["man", "ryta", "kung", "safari"] },
+      { word: "delfin", hints: ["smart", "hav", "lekfull", "hoppa"] },
+      { word: "tiger", hints: ["ränder", "orange", "vild", "djungel"] },
+      { word: "kanin", hints: ["hoppa", "öron", "morot", "mjuk"] },
+      { word: "varg", hints: ["flock", "yla", "skog", "vild"] },
+      { word: "björn", hints: ["honung", "grotta", "stark", "sova"] },
+    ],
+    food: [
+      { word: "pizza", hints: ["rund", "ost", "italiensk", "slice"] },
+      { word: "sushi", hints: ["rå", "ris", "japansk", "rulle"] },
+      { word: "hamburgare", hints: ["bröd", "kött", "amerikansk", "snabb"] },
+      { word: "pasta", hints: ["nudlar", "sås", "italiensk", "gaffel"] },
+      { word: "choklad", hints: ["söt", "brun", "kakao", "godis"] },
+      { word: "äpple", hints: ["rött", "frukt", "träd", "krispig"] },
+      { word: "tårta", hints: ["söt", "födelsedag", "lager", "glasyr"] },
+      { word: "soppa", hints: ["flytande", "varm", "sked", "skål"] },
+    ],
+    objects: [
+      { word: "stol", hints: ["sitta", "ben", "möbel", "trä"] },
+      { word: "lampa", hints: ["ljus", "ljust", "knapp", "skärm"] },
+      { word: "bok", hints: ["sidor", "läsa", "berättelse", "papper"] },
+      { word: "telefon", hints: ["ringa", "skärm", "ficka", "signal"] },
+      { word: "bil", hints: ["köra", "däck", "motor", "väg"] },
+      { word: "dator", hints: ["skärm", "tangentbord", "digital", "arbete"] },
+      { word: "klocka", hints: ["tid", "ticka", "siffror", "vägg"] },
+      { word: "spegel", hints: ["spegla", "glas", "bild", "se"] },
+    ],
+  },
   en: {
     animals: [
       { word: "elephant", hints: ["large", "gray", "trunk", "africa"] },

@@ -1,0 +1,74 @@
+{
+  "Index": {
+    "title": "HITTA",
+    "slogan": "Prat är billigt, lögner är ovärderliga",
+    "startGame": "Starta Spel"
+  },
+  "SetupPhase": {
+    "gameSetup": "Spelinställningar",
+    "configureSettings": "Konfigurera dina spelinställningar innan matchen startar.",
+    "players": "Spelare",
+    "ready": "redo",
+    "numberOfPlayers": "Antal Spelare:",
+    "playerNames": "Spelarnamn",
+    "player": "Spelare",
+    "addPlayer": "Lägg till Spelare",
+    "of": "av",
+    "gameSettings": "Spelinställningar",
+    "language": "Språk",
+    "hints": "Ledtrådar",
+    "showHints": "Visa ledtrådar till bedragare",
+    "enabled": "Aktiverad",
+    "disabled": "Inaktiverad",
+    "categories": "Kategorier",
+    "selected": "valda",
+    "addCustomCategory": "Lägg till Kategori",
+    "done": "Klar",
+    "customCategoryPlaceholder": "Kategorinamn",
+    "selectCategory": "Välj minst en kategori",
+    "startGame": "Starta Spel",
+    "generateWords": "Generera Ord ✨",
+    "animals": "Djur",
+    "food": "Mat",
+    "objects": "Föremål",
+    "movies": "Filmer",
+    "places": "Platser",
+    "professions": "Yrken",
+    "settings": "Inställningar",
+    "difficulty": "Svårighetsgrad",
+    "easy": "Lätt",
+    "medium": "Medel",
+    "hard": "Svår"
+  },
+  "WordRevealPhase": {
+    "chooseYourCard": "Välj Ditt Kort",
+    "selectAnyCard": "Välj valfritt kort för att avslöja den spelarens roll",
+    "playersRevealed": "spelare avslöjade",
+    "of": "av",
+    "tapToReveal": "Tryck för att avslöja",
+    "allCardsRevealed": "Alla Kort Avslöjade",
+    "everyPlayerSeen": "Alla spelare har sett sin roll",
+    "startDiscussion": "Starta Spel",
+    "player": "Spelare",
+    "readyToReveal": "Redo att avslöja din roll?",
+    "impostor": "BEDRAGARE",
+    "yourHint": "Din ledtråd:",
+    "yourWordIs": "Ditt ord är:",
+    "flipCard": "Vänd Kort",
+    "nextPlayer": "Nästa Spelare"
+  },
+  "DiscussionPhase": {
+    "sayYourWords": "Säg Era Ord",
+    "starts": "börjar",
+    "revealImpostor": "Avslöja Bedragare"
+  },
+  "ResultsPhase": {
+    "results": "Resultat",
+    "theWordWas": "Ordet Var",
+    "newGame": "Nytt Spel",
+    "category": "Kategori"
+  },
+  "Error": {
+    "somethingWentWrong": "Något gick fel, vänligen försök igen."
+  }
+}
