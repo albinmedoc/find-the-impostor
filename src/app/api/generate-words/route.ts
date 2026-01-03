@@ -1,40 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Locale } from "@/src/config/language";
-import { openAIService } from "@/src/lib/openai-service";
+import { AIService } from "@/src/lib/ai-service";
 import { PromptEngine } from "@/src/lib/prompts";
 import { NextRequest, NextResponse } from "next/server";
-
-interface RateLimitTier {
-  windowMs: number;
-  maxRequests: number;
-  description: string;
-}
-
-const RATE_LIMIT_TIERS: Record<string, RateLimitTier> = {
-  default: {
-    windowMs: 60 * 1000, // 1 minute
-    maxRequests: 2, // 2 requests per minute
-    description: "Standard rate limit",
-  },
-  burst: {
-    windowMs: 10 * 1000, // 10 seconds
-    maxRequests: 1, // Max 1 requests in 10 seconds
-    description: "Burst protection",
-  },
-  hourly: {
-    windowMs: 60 * 60 * 1000, // 1 hour
-    maxRequests: 10, // 10 requests per hour
-    description: "Hourly limit",
-  },
-};
-
-function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const realIP = request.headers.get("x-real-ip");
-  const cloudflareIP = request.headers.get("cf-connecting-ip");
-
-  return cloudflareIP || realIP || forwarded?.split(",")[0] || "unknown";
-}
 
 function validateInput(body: any): {
   isValid: boolean;
@@ -86,39 +54,8 @@ function validateInput(body: any): {
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
-  const clientIP = getClientIP(request);
 
   try {
-    // Multi-tier rate limiting
-    //! NOTE: Implement Redis or similar for distributed rate limiting
-    for (const [tierName, tier] of Object.entries(RATE_LIMIT_TIERS)) {
-      if (
-        !openAIService.checkRateLimit(
-          `${clientIP}:${tierName}`,
-          tier.windowMs,
-          tier.maxRequests,
-        )
-      ) {
-        console.warn(
-          `Rate limit exceeded for ${clientIP} on ${tier.description}`,
-        );
-        return NextResponse.json(
-          {
-            error: `Rate limit exceeded: ${tier.description}. Please try again later.`,
-            retryAfter: Math.ceil(tier.windowMs / 1000),
-          },
-          {
-            status: 429,
-            headers: {
-              "Retry-After": Math.ceil(tier.windowMs / 1000).toString(),
-              "X-RateLimit-Limit": tier.maxRequests.toString(),
-              "X-RateLimit-Window": tier.windowMs.toString(),
-            },
-          },
-        );
-      }
-    }
-
     // Validate and sanitize input
     const body = await request.json();
     const validation = validateInput(body);
@@ -138,13 +75,10 @@ export async function POST(request: NextRequest) {
     });
 
     console.log(
-      `Generating ${count} words for category "${category}" in ${language} (${difficulty} difficulty) for IP: ${clientIP.substring(
-        0,
-        8,
-      )}...`,
+      `Generating ${count} words for category "${category}" in ${language} (${difficulty} difficulty)...`,
     );
 
-    const result = await openAIService.generateWords(prompt, {});
+    const result = await AIService.generateWords(prompt, {});
 
     if (!PromptEngine.validateResponse(result, count)) {
       throw new Error(
@@ -187,7 +121,6 @@ export async function POST(request: NextRequest) {
           responseTime,
           requestedCount: count,
           actualCount: Math.min(validWords.length, count),
-          clientIP: clientIP.substring(0, 8) + "...", // Partial IP for logging
         },
       },
       {
@@ -200,7 +133,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     const responseTime = Date.now() - startTime;
-    console.error(`Word generation failed for ${clientIP}:`, error);
 
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
@@ -236,12 +168,9 @@ export async function POST(request: NextRequest) {
 
 // Health check endpoint
 export async function GET() {
-  const stats = openAIService.getUsageStats();
-
   return NextResponse.json({
     status: "healthy",
     service: "word-generation",
     timestamp: new Date().toISOString(),
-    stats,
   });
 }
