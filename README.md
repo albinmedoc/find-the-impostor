@@ -2,9 +2,7 @@
 
 # 🕵️ Find the Impostor
 
-  <a href="https://impostor.knotzer.io">
-    <img src="./public/images/impostor-logo-rounded.png" alt="Find the Impostor Logo" width="200">
-  </a>
+  <img src="./public/images/impostor-logo-rounded.png" alt="Find the Impostor Logo" width="200">
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.3-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://reactjs.org/)
@@ -14,16 +12,9 @@
 
 **A local-first party game PWA where players guess the secret word while impostors try to blend in**
 
-[🎮 Play Demo 🎮](https://impostor.knotzer.io)
-
 </div>
 
 ---
-
-> [!NOTE]
-> The AI demo is currently running on a personal budget, which has now been used up, so you might notice some errors or fallback words.
-> If you enjoy the project and feel generous, you can [buy me a coffee](https://buymeacoffee.com/knotzer) or [sponsor me on GitHub](https://github.com/sponsors/knotzerio).  
-
 
 ## 🎮 How to Play
 
@@ -94,12 +85,22 @@
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Docker
+
+```bash
+docker run -p 3000:3000 \
+  -e AI_PROVIDER=openrouter \
+  -e AI_API_KEY=your_api_key_here \
+  -e AI_MODEL=google/gemini-2.0-flash-exp:free \
+  ghcr.io/albinmedoc/find-the-impostor:latest
+```
+
+### Development
+
+#### Prerequisites
 
 - **Node.js** 18.0 or later
-- **npm**, **yarn**, or **pnpm**
-
-### Installation
+- **pnpm**
 
 ```bash
 # Clone the repository
@@ -107,31 +108,13 @@ git clone https://github.com/KnotzerIO/find-the-impostor.git
 cd find-the-impostor
 
 # Install dependencies
-npm install
-# or
-yarn install
-# or
 pnpm install
-```
 
-### Development
-
-```bash
 # Start development server with Turbopack
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Building for Production
-
-```bash
-# Build the application
-npm run build
-
-# Start production server
-npm run start
-```
 
 ---
 
