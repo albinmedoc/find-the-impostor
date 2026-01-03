@@ -337,7 +337,7 @@ export default function SetupPhase() {
           disabled={isStarting || gameState.selectedCategories.length === 0}
           className="w-full rounded-xl bg-blue-600 py-6 text-lg font-medium text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-zinc-700"
         >
-          {isStarting ? t("generateWords") : t("startGame")}
+          {isStarting ? t("generatingWords") : t("startGame")}
         </Button>
       </div>
     </div>

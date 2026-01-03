@@ -266,7 +266,7 @@ export default function MobileSetupPhase() {
               className="h-16 w-full rounded-2xl bg-white text-lg font-semibold text-black hover:bg-gray-100 active:bg-gray-200 disabled:bg-gray-700 disabled:text-gray-400 disabled:opacity-50"
             >
               <Play className="mr-3 h-6 w-6" />
-              {isStarting ? t("generateWords") : t("startGame")}
+              {isStarting ? t("generatingWords") : t("startGame")}
             </Button>
 
             {!canStartGame && gameState.selectedCategories.length === 0 && (
