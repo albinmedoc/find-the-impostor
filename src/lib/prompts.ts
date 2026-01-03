@@ -6,7 +6,6 @@ export interface PromptConfig {
   language: Locale;
   count: number;
   difficulty?: "easy" | "medium" | "hard";
-  culturalContext?: "universal" | "local";
 }
 
 export class PromptEngine {

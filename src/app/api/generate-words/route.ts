@@ -71,7 +71,6 @@ export async function POST(request: NextRequest) {
       language,
       count,
       difficulty,
-      culturalContext: "universal",
     });
 
     console.log(
