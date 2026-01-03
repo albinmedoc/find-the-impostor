@@ -51,6 +51,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy prompts directory for system prompt
+COPY --from=builder --chown=nextjs:nodejs /app/prompts ./prompts
+
 USER nextjs
 
 EXPOSE 3000
