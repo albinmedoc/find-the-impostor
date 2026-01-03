@@ -31,9 +31,6 @@ export class OpenRouterProvider extends BaseAIProvider {
         headers: {
           Authorization: `Bearer ${this.config.apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer":
-            process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-          "X-Title": "Party Game Word Generator",
         },
         body: JSON.stringify({
           model: currentModel,
