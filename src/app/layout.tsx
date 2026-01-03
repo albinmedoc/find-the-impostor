@@ -4,7 +4,6 @@ import ThemeColor from "@/src/components/theme-color";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,16 +31,6 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#07090a" />
       </head>
-      {process.env.NODE_ENV === "production" &&
-        process.env.UMAMI_SCRIPT_URL &&
-        process.env.UMAMI_WEBSITE_ID && (
-          <Script
-            async
-            src={process.env.UMAMI_SCRIPT_URL}
-            data-website-id={process.env.UMAMI_WEBSITE_ID}
-          />
-        )}
-
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
       >
