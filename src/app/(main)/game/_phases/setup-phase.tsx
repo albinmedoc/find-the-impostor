@@ -1,15 +1,11 @@
-import { IconBox } from "../_components/icon-box";
+"use client";
+
+import CategorySelection from "../_components/category-selection";
+import DifficultySelector from "../_components/difficulty-selector";
 import LanguageSelector from "../_components/language-selector";
+import PlayerManagement from "../_components/player-management";
 import { Button } from "@/src/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/src/components/ui/card";
-import { Checkbox } from "@/src/components/ui/checkbox";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
+import { Card, CardContent } from "@/src/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -17,12 +13,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import { Separator } from "@/src/components/ui/separator";
+import { Switch } from "@/src/components/ui/switch";
 import { Locale } from "@/src/config/language";
-import { setUserLocale } from "@/src/lib/locale";
 import { useGameStore } from "@/src/stores/game-store";
-import { Difficulty } from "@/src/types/game";
-import { ArrowLeft, Plus, Settings, Tag, User, X } from "lucide-react";
+import {
+  ArrowBigUpDash,
+  ArrowLeft,
+  ChevronRight,
+  Eye,
+  Languages,
+  Lightbulb,
+  Play,
+  Tag,
+  Users,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -42,33 +46,16 @@ export default function SetupPhase() {
     setCustomCategory,
     toggleHints,
     startGame,
-    setDifficulty,
   } = useGameStore();
 
+  const [currentScreen, setCurrentScreen] = useState<
+    "main" | "players" | "categories"
+  >("main");
   const [isStarting, setIsStarting] = useState(false);
   const t = useTranslations("SetupPhase");
   const tError = useTranslations("Error");
   const router = useRouter();
   const locale = useLocale() as Locale;
-  const categoryTranslations = {
-    animals: `🐾 ${t("animals")}`,
-    food: `🍕 ${t("food")}`,
-    objects: `📱 ${t("objects")}`,
-    movies: `🎬 ${t("movies")}`,
-    places: `🌍 ${t("places")}`,
-    professions: `💼 ${t("professions")}`,
-  };
-
-  const allCategories = [
-    ...["animals", "food", "objects", "movies", "places", "professions"],
-    ...customCategories,
-  ];
-
-  const difficulties = [
-    { value: "easy", label: t("easy") },
-    { value: "medium", label: t("medium") },
-    { value: "hard", label: t("hard") },
-  ];
 
   const handleStartGame = async () => {
     try {
@@ -84,261 +71,252 @@ export default function SetupPhase() {
     }
   };
 
-  const handleAddCustomCategory = () => {
-    if (gameState.customCategory.trim()) {
-      addCustomCategory(gameState.customCategory.trim());
+  const canStartGame =
+    gameState.selectedCategories.length > 0 && gameState.totalPlayers >= 3;
+
+  const getCategoryDisplayText = () => {
+    if (gameState.selectedCategories.length === 1) {
+      const category = gameState.selectedCategories[0];
+      return customCategories.includes(category)
+        ? category
+        : t(category, { fallback: category });
     }
+    return `${gameState.selectedCategories.length} ${t("selected")}`;
   };
 
+  if (currentScreen === "players") {
+    return (
+      <PlayerManagement
+        onBack={() => setCurrentScreen("main")}
+        gameState={gameState}
+        playerNames={playerNames}
+        setPlayerCount={setPlayerCount}
+        setPlayerName={setPlayerName}
+        t={t}
+      />
+    );
+  }
+
+  if (currentScreen === "categories") {
+    return (
+      <CategorySelection
+        onBack={() => setCurrentScreen("main")}
+        gameState={gameState}
+        customCategories={customCategories}
+        toggleCategory={toggleCategory}
+        addCustomCategory={addCustomCategory}
+        removeCustomCategory={removeCustomCategory}
+        setCustomCategory={setCustomCategory}
+        t={t}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen p-6 text-white">
+    <div className="max-dvh h-dvh">
+      {/* Disable overlay blocks all user interactions while game is starting */}
+      {isStarting && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center"></div>
+      )}
+
       <Button
-        onClick={() => router.push("/")}
+        onClick={() => router.back()}
         variant="ghost"
         size="icon"
         className="absolute top-6 left-2 z-10"
       >
         <ArrowLeft className="size-6" />
       </Button>
-      <div className="mx-auto max-w-2xl space-y-8">
+
+      <div className="container mx-auto space-y-8 px-4 py-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-4xl font-bold">{t("gameSetup")}</h1>
-          <p className="text-sm text-zinc-400">{t("configureSettings")}</p>
+          <h1 className="text-3xl font-bold text-white">{t("gameSetup")}</h1>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-medium">
-              <IconBox icon={User} color="blue" />
-              {t("players")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Label className="text-sm font-medium text-zinc-300">
-                {t("numberOfPlayers")}
-              </Label>
-              <Select
-                value={gameState.totalPlayers.toString()}
-                onValueChange={value => setPlayerCount(Number(value), t)}
-              >
-                <SelectTrigger className="border-zinc-700 bg-zinc-800/50 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="border-zinc-700 bg-zinc-900">
-                  {Array.from({ length: 8 }, (_, i) => i + 3).map(num => (
-                    <SelectItem
-                      key={num}
-                      value={num.toString()}
-                      className="text-white focus:bg-zinc-800"
-                    >
-                      {num}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-3">
-              <Label className="text-sm font-medium text-zinc-300">
-                {t("playerNames")}
-              </Label>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {Array.from({ length: gameState.totalPlayers }, (_, i) => (
-                  <Input
-                    key={`player-${gameState.totalPlayers}-${i}`}
-                    placeholder={`${t("player")} ${i + 1}`}
-                    value={playerNames[i] || ""}
-                    onChange={e => setPlayerName(i, e.target.value)}
-                    onFocus={e => e.target.select()}
-                    className="text-white transition-colors placeholder:text-zinc-500 focus:border-blue-400"
-                  />
-                ))}
+        <div className="space-y-6">
+          <Card
+            className="rounded-3xl p-0"
+            onClick={() => setCurrentScreen("players")}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      {t("players")}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {gameState.totalPlayers} {t("ready")}
+                    </div>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-medium">
-              <IconBox icon={Settings} color="purple" />
-              {t("gameSettings")}
-            </CardTitle>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-zinc-300">
-                  🎭 Impostors
-                </Label>
-                <Select
-                  value={gameState.impostorCount.toString()}
-                  onValueChange={value => setImpostorCount(Number(value))}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from(
-                      { length: gameState.totalPlayers - 1 },
-                      (_, i) => i + 1,
-                    ).map(num => (
-                      <SelectItem key={num} value={num.toString()}>
-                        {num} Impostor{num > 1 ? "s" : ""}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          <Card
+            className="rounded-3xl p-0"
+            onClick={() => setCurrentScreen("categories")}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500">
+                    <Tag className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      {t("categories")}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {getCategoryDisplayText()}
+                    </div>
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400" />
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="space-y-3">
-                <Label className="flex items-center text-sm font-medium text-zinc-300">
-                  🌐 {t("language")}
-                </Label>
-                <LanguageSelector onLanguageChange={setUserLocale} />
+          <Card className="rounded-3xl p-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-500">
+                    <ArrowBigUpDash className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      {t("difficulty")}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex w-40 items-center">
+                  <DifficultySelector />
+                </div>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="space-y-3">
-                <Label className="flex items-center text-sm font-medium text-zinc-300">
-                  ⚡ {t("difficulty")}
-                </Label>
-                <Select
-                  value={gameState.difficulty}
-                  onValueChange={value => setDifficulty(value as Difficulty)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {difficulties.map(difficulty => (
-                      <SelectItem
-                        key={difficulty.value}
-                        value={difficulty.value}
-                      >
-                        {difficulty.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          <Card className="rounded-3xl p-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500">
+                    <Languages className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      {t("language")}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex w-40 items-center">
+                  <LanguageSelector />
+                </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            <Separator className="bg-zinc-700" />
+          <Card className="rounded-3xl p-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500">
+                    <Eye className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      Impostors
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {gameState.impostorCount} {t("of")}{" "}
+                      {gameState.totalPlayers}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex w-20 items-center">
+                  <Select
+                    value={gameState.impostorCount.toString()}
+                    onValueChange={value => setImpostorCount(Number(value))}
+                  >
+                    <SelectTrigger className="h-10 w-full rounded-xl border-zinc-700 bg-zinc-800/50 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="border-zinc-700 bg-zinc-900">
+                      {Array.from(
+                        { length: gameState.totalPlayers - 1 },
+                        (_, i) => i + 1,
+                      ).map(num => (
+                        <SelectItem
+                          key={num}
+                          value={num.toString()}
+                          className="text-white focus:bg-zinc-800 focus:text-white"
+                        >
+                          {num}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            <div className="flex items-center justify-between rounded-lg bg-zinc-800/30 p-3">
-              <div className="flex items-center space-x-3">
-                <Checkbox
-                  id="hints"
+          <Card className="rounded-3xl p-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+                      gameState.showHintsToImpostors
+                        ? "bg-green-500"
+                        : "bg-gray-500"
+                    }`}
+                  >
+                    <Lightbulb className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-medium text-white">
+                      {t("hints")}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {gameState.showHintsToImpostors
+                        ? t("enabled")
+                        : t("disabled")}
+                    </div>
+                  </div>
+                </div>
+                <Switch
+                  className="h-6 w-12"
                   checked={gameState.showHintsToImpostors}
                   onCheckedChange={toggleHints}
-                  className="border-zinc-600 data-[state=checked]:border-purple-500 data-[state=checked]:bg-blue-500"
                 />
-                <Label
-                  htmlFor="hints"
-                  className="cursor-pointer text-sm font-medium text-zinc-300"
-                >
-                  {t("showHints")}
-                </Label>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-medium">
-              <IconBox icon={Tag} color="green" /> {t("categories")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {allCategories.map(category => {
-                const isCustomCategory = customCategories.includes(category);
+          <div className="pt-6">
+            <Button
+              onClick={handleStartGame}
+              disabled={!canStartGame || isStarting}
+              className="h-16 w-full rounded-2xl bg-white text-lg font-semibold text-black hover:bg-gray-100 active:bg-gray-200 disabled:bg-gray-700 disabled:text-gray-400 disabled:opacity-50"
+            >
+              <Play className="mr-3 h-6 w-6" />
+              {isStarting ? t("generatingWords") : t("startGame")}
+            </Button>
 
-                return (
-                  <div
-                    key={category}
-                    className="group flex items-center justify-between rounded-lg bg-zinc-800/30 p-3 transition-colors hover:bg-zinc-800/50"
-                  >
-                    <div
-                      className="flex flex-1 cursor-pointer items-center space-x-3"
-                      onClick={() => toggleCategory(category)}
-                    >
-                      <Checkbox
-                        checked={gameState.selectedCategories.includes(
-                          category,
-                        )}
-                        className="border-zinc-600 data-[state=checked]:border-green-500 data-[state=checked]:bg-green-500"
-                      />
-                      <Label className="cursor-pointer text-sm font-medium text-zinc-300 capitalize">
-                        {categoryTranslations[
-                          category as keyof typeof categoryTranslations
-                        ] || `🏷️ ${category}`}
-                      </Label>
-                    </div>
-
-                    {isCustomCategory && (
-                      <Button
-                        onClick={e => {
-                          e.stopPropagation();
-                          removeCustomCategory(category);
-                        }}
-                        variant="ghost"
-                        size="icon"
-                        className="h-auto p-1 text-red-400 hover:text-red-300"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            <Separator className="bg-zinc-700" />
-
-            <div className="space-y-3">
-              <Label className="text-sm font-medium text-zinc-300">
-                {t("addCustomCategory")}
-              </Label>
-              <div className="flex gap-3">
-                <Input
-                  placeholder={t("customCategoryPlaceholder")}
-                  value={gameState.customCategory || ""}
-                  onChange={e => setCustomCategory(e.target.value)}
-                  onKeyDown={e =>
-                    e.key === "Enter" && handleAddCustomCategory()
-                  }
-                  className="flex-1 border-zinc-700 bg-zinc-800/50 text-white transition-colors placeholder:text-zinc-500 focus:border-green-400"
-                />
-                <Button
-                  onClick={handleAddCustomCategory}
-                  variant="outline"
-                  size="icon"
-                  className="border-zinc-700 bg-zinc-800/50 text-white hover:bg-zinc-700"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {gameState.selectedCategories.length === 0 && (
-              <div className="rounded-lg border border-red-900/30 bg-red-950/20 p-3">
-                <p className="text-sm text-red-400">{t("selectCategory")}</p>
-              </div>
+            {!canStartGame && gameState.selectedCategories.length === 0 && (
+              <p className="mt-3 text-center text-sm text-red-400">
+                {t("selectCategory")}
+              </p>
             )}
-          </CardContent>
-        </Card>
-
-        <Button
-          onClick={handleStartGame}
-          disabled={isStarting || gameState.selectedCategories.length === 0}
-          className="w-full rounded-xl bg-blue-600 py-6 text-lg font-medium text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-zinc-700"
-        >
-          {isStarting ? t("generatingWords") : t("startGame")}
-        </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

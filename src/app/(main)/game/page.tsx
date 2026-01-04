@@ -1,7 +1,6 @@
 "use client";
 
 import DiscussionPhase from "./_phases/discussion-phase";
-import MobileSetupPhase from "./_phases/mobile-setup-phase";
 import { ResultsPhase } from "./_phases/results-phase";
 import SetupPhase from "./_phases/setup-phase";
 import WordRevealPhase from "./_phases/word-reveal-phase";
@@ -47,17 +46,7 @@ export default function Game() {
         <ArrowLeft className="size-6" />
       </Button>
 
-      {gameState.phase === "setup" && (
-        <>
-          <div className="hidden md:block">
-            <SetupPhase />
-          </div>
-          <div className="md:hidden">
-            <MobileSetupPhase />
-          </div>
-        </>
-      )}
-
+      {gameState.phase === "setup" && <SetupPhase />}
       {gameState.phase === "wordreveal" && <WordRevealPhase />}
       {gameState.phase === "discussion" && <DiscussionPhase />}
       {gameState.phase === "results" && <ResultsPhase />}
