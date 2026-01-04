@@ -39,9 +39,7 @@ export default function Game() {
         onClick={handleReturn}
         variant="ghost"
         size="icon"
-        className={`absolute top-6 left-2 z-10 ${
-          gameState.phase === "setup" ? "max-md:hidden" : ""
-        }`}
+        className={`absolute top-6 left-2 z-10`}
       >
         <ArrowLeft className="size-6" />
       </Button>
