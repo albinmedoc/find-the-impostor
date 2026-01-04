@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Locale } from "../config/language";
+import { Locale, getLanguageLabel } from "../config/language";
 
 export interface PromptConfig {
   category: string;
@@ -9,62 +9,6 @@ export interface PromptConfig {
 }
 
 export class PromptEngine {
-  private static readonly LANGUAGE_CONFIGS = {
-    sv: {
-      name: "Svenska",
-      culturalNote: "Fokusera på allmänt kända termer i svensktalande länder.",
-      examples: {
-        animals: {
-          word: "elefant",
-          hints: ["minne", "cirkus", "stor"],
-        },
-        food: {
-          word: "pizza",
-          hints: ["hemleverans", "triangel", "tonåring"],
-        },
-        objects: {
-          word: "hammare",
-          hints: ["domare", "åska", "byggarbetsplats"],
-        },
-        places: {
-          word: "bibliotek",
-          hints: ["tystnad", "försenad", "forskning"],
-        },
-        professions: {
-          word: "kock",
-          hints: ["temperatur", "kreativitet", "vit"],
-        },
-      },
-    },
-    en: {
-      name: "English",
-      culturalNote:
-        "Focus on universally known terms in English-speaking countries.",
-      examples: {
-        animals: {
-          word: "elephant",
-          hints: ["memory", "circus", "large"],
-        },
-        food: {
-          word: "pizza",
-          hints: ["delivery", "triangle", "teenage"],
-        },
-        objects: {
-          word: "hammer",
-          hints: ["judge", "thunder", "construction"],
-        },
-        places: {
-          word: "library",
-          hints: ["silence", "overdue", "research"],
-        },
-        professions: {
-          word: "chef",
-          hints: ["temperature", "creativity", "white"],
-        },
-      },
-    },
-  };
-
   private static readonly DIFFICULTY_MODIFIERS = {
     easy: "Choose very common, everyday words that most people would recognize immediately.",
     medium:
@@ -94,82 +38,20 @@ export class PromptEngine {
   };
 
   static createPrompt(config: PromptConfig): string {
-    const langConfig = PromptEngine.LANGUAGE_CONFIGS[config.language];
     const difficultyMod =
       PromptEngine.DIFFICULTY_MODIFIERS[config.difficulty || "medium"];
     const categoryContext =
       PromptEngine.CATEGORY_CONTEXTS[
         config.category.toLowerCase() as keyof typeof PromptEngine.CATEGORY_CONTEXTS
-      ] || null;
+      ] || "Generate appropriate words for this category.";
 
-    const example =
-      langConfig.examples[
-        config.category.toLowerCase() as keyof typeof langConfig.examples
-      ];
-    const exampleJson = example
-      ? JSON.stringify({ wordsWithHints: [example] }, null, 2)
-      : "";
+    return `Generate ${config.count} words for the category "${config.category}" in ${getLanguageLabel(config.language)}.
 
-    return `Generate ${config.count} words for the category "${
-      config.category
-    }" in ${langConfig.name}.
+CATEGORY: ${categoryContext}
 
-CATEGORY CONTEXT: ${
-      categoryContext || "Generate appropriate words for this category."
-    }
+DIFFICULTY: ${difficultyMod}
 
-DIFFICULTY LEVEL: ${difficultyMod}
-
-CULTURAL CONSIDERATION: ${langConfig.culturalNote}
-
-WORD SELECTION CRITERIA:
-- Words must be nouns (things, not actions or descriptions)
-- Avoid abbreviations, acronyms, or technical jargon
-- Ensure words are spell-able and pronounceable
-- Mix different subcategories within the main category
-- Include a variety of word lengths and complexities
-- Ensure words are culturally relevant to the specified language
-- Avoid overly obscure or niche terms
-
-HINT CRAFTING RULES:
-1. Each hint should be 1 word maximum
-2. Hints should be indirect associations, not direct descriptors
-3. Use broad categories, feelings, or abstract connections
-4. Avoid physical descriptions (color, size, shape)
-5. Avoid location-specific or functional hints
-6. No synonyms, rhymes, or wordplay
-7. Think of distant but logical connections
-
-HINT STRATEGY:
-- Use emotional or conceptual associations rather than literal descriptions
-- Reference broader categories or themes
-- Use contextual clues from completely different domains
-- Aim for "aha!" moments rather than obvious connections
-- Each hint should feel like a puzzle piece, not a direct clue
-- Include playful, unexpected, or mildly humorous associations
-- Think of pop culture references, internet culture, or amusing situations
-- Use ironic or contrasting concepts that create surprise
-
-QUALITY ASSURANCE:
-- Each word must have exactly 3 hints
-- Hints must be helpful for guessing but not too obvious
-- Test mentally: Could someone reasonably guess the word from these hints?
-- Ensure variety in word length and complexity within the set
-
-${example ? `EXAMPLE FORMAT:\n${exampleJson}` : ""}
-
-Generate exactly ${
-      config.count
-    } words following this structure. Respond only with valid JSON in this exact format:
-
-{
-  "wordsWithHints": [
-    {
-      "word": "example",
-      "hints": ["hint one", "hint two", "hint three"]
-    }
-  ]
-}`;
+CULTURAL FOCUS: Generate words commonly known in countries where language "${getLanguageLabel(config.language)}" is spoken.`;
   }
 
   static validateResponse(response: any, expectedCount: number): boolean {
