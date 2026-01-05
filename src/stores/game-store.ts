@@ -1,4 +1,4 @@
-import { Locale } from "../config/language";
+import type { Locale } from "../config/language";
 import { getRandomWordWithHints } from "@/src/lib/word-service";
 import type {
   Difficulty,
@@ -20,13 +20,14 @@ interface GameStore {
   setPlayerName: (index: number, name: string) => void;
   setImpostorCount: (count: number) => void;
   setDifficulty: (difficulty: Difficulty) => void;
+  setLanguage: (language: Locale) => void;
   toggleCategory: (category: string) => void;
   addCustomCategory: (category: string) => void;
   setCustomCategory: (category: string) => void;
   removeCustomCategory: (category: string) => void;
   toggleHints: () => void;
 
-  startGame: (t: TranslationFunction, language: Locale) => Promise<void>;
+  startGame: (t: TranslationFunction) => Promise<void>;
   nextRevealPlayer: () => void;
   startDiscussion: () => void;
   endGame: () => void;
@@ -48,6 +49,7 @@ export const useGameStore = create<GameStore>()(
         selectedCategories: ["animals", "food", "movies"],
         customCategory: "",
         difficulty: "medium",
+        language: "en", // Change this to the users preferred language code
         showHintsToImpostors: true,
         currentRevealIndex: 0,
         gameStarted: false,
@@ -95,6 +97,12 @@ export const useGameStore = create<GameStore>()(
       setDifficulty: difficulty => {
         set(state => ({
           gameState: { ...state.gameState, difficulty },
+        }));
+      },
+
+      setLanguage: language => {
+        set(state => ({
+          gameState: { ...state.gameState, language },
         }));
       },
 
@@ -173,7 +181,7 @@ export const useGameStore = create<GameStore>()(
         }));
       },
 
-      startGame: async (t: TranslationFunction, language: Locale) => {
+      startGame: async (t: TranslationFunction) => {
         const { gameState, playerNames } = get();
 
         if (gameState.selectedCategories.length === 0) {
@@ -205,7 +213,7 @@ export const useGameStore = create<GameStore>()(
           ];
         const wordWithHints = await getRandomWordWithHints(
           randomCategory,
-          language,
+          gameState.language,
           gameState.difficulty,
         );
 
@@ -278,6 +286,7 @@ export const useGameStore = create<GameStore>()(
             gameState: {
               ...state.gameState,
               difficulty: "medium",
+              language: "en",
             },
           };
         }
@@ -291,6 +300,7 @@ export const useGameStore = create<GameStore>()(
           impostorCount: state.gameState.impostorCount,
 
           difficulty: state.gameState.difficulty,
+          language: state.gameState.language,
           selectedCategories: state.gameState.selectedCategories,
           showHintsToImpostors: state.gameState.showHintsToImpostors,
         },

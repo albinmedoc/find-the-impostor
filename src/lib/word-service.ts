@@ -1,4 +1,4 @@
-import { Locale } from "../config/language";
+import type { Locale } from "../config/language";
 import { db } from "./storage";
 import { Difficulty, WordWithHints } from "@/src/types/game";
 

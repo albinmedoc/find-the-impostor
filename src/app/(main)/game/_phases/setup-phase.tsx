@@ -14,7 +14,6 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { Switch } from "@/src/components/ui/switch";
-import { Locale } from "@/src/config/language";
 import { useGameStore } from "@/src/stores/game-store";
 import {
   ArrowBigUpDash,
@@ -27,7 +26,7 @@ import {
   Tag,
   Users,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -40,6 +39,7 @@ export default function SetupPhase() {
     setPlayerCount,
     setPlayerName,
     setImpostorCount,
+    setLanguage,
     toggleCategory,
     addCustomCategory,
     removeCustomCategory,
@@ -55,14 +55,13 @@ export default function SetupPhase() {
   const t = useTranslations("SetupPhase");
   const tError = useTranslations("Error");
   const router = useRouter();
-  const locale = useLocale() as Locale;
 
   const handleStartGame = async () => {
     try {
       if (isStarting) return;
       if (gameState.gameStarted) return;
       setIsStarting(true);
-      await startGame(t, locale);
+      await startGame(t);
     } catch (error) {
       console.error(error);
       toast.error(tError("somethingWentWrong"));
@@ -216,7 +215,10 @@ export default function SetupPhase() {
                   </div>
                 </div>
                 <div className="flex w-40 items-center">
-                  <LanguageSelector />
+                  <LanguageSelector
+                    selectedLanguage={gameState.language}
+                    onLanguageChange={language => setLanguage(language)}
+                  />
                 </div>
               </div>
             </CardContent>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Locale, getLanguageLabel } from "../config/language";
+import { Locale, getLanguageName } from "../config/language";
 
 export interface PromptConfig {
   category: string;
@@ -45,13 +45,13 @@ export class PromptEngine {
         config.category.toLowerCase() as keyof typeof PromptEngine.CATEGORY_CONTEXTS
       ] || "Generate appropriate words for this category.";
 
-    return `Generate ${config.count} words for the category "${config.category}" in ${getLanguageLabel(config.language)}.
+    return `Generate ${config.count} words for the category "${config.category}" in ${getLanguageName(config.language)}.
 
 CATEGORY: ${categoryContext}
 
 DIFFICULTY: ${difficultyMod}
 
-CULTURAL FOCUS: Generate words commonly known in countries where language "${getLanguageLabel(config.language)}" is spoken.`;
+CULTURAL FOCUS: Generate words commonly known in countries where language "${getLanguageName(config.language)}" is spoken.`;
   }
 
   static validateResponse(response: any, expectedCount: number): boolean {

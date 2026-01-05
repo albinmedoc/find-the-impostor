@@ -1,9 +1,16 @@
-import { Locale, SUPPORTED_LANGUAGES } from "@/src/config/language";
+import { Locale } from "@/src/config/language";
 import { getUserLocale } from "@/src/lib/locale";
+import fs from "fs";
 import { getRequestConfig } from "next-intl/server";
 import { headers } from "next/headers";
+import path from "path";
 
-const supportedLocales = SUPPORTED_LANGUAGES.map(lang => lang.value);
+// Dynamically get available locales from the locales folder
+const localesDir = path.join(process.cwd(), "i18n", "locales");
+const supportedLocales = fs
+  .readdirSync(localesDir)
+  .filter(file => file.endsWith(".json"))
+  .map(file => file.replace(".json", "")) as Locale[];
 
 async function getPreferredLocale(): Promise<Locale> {
   try {

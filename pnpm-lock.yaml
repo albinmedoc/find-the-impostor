@@ -35,6 +35,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      countries-list:
+        specifier: ^3.2.2
+        version: 3.2.2
       dexie:
         specifier: ^4.0.11
         version: 4.2.1
@@ -1461,6 +1464,9 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  countries-list@3.2.2:
+    resolution: {integrity: sha512-ABJ/RWQBrPWy+hRuZoW+0ooK8p65Eo3WmUZwHm6v4wmfSPznNAKzjy3+UUYrJK2v3182BVsgWxdB6ROidj39kw==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -4063,6 +4069,8 @@ snapshots:
   commander@14.0.2: {}
 
   concat-map@0.0.1: {}
+
+  countries-list@3.2.2: {}
 
   cross-spawn@7.0.6:
     dependencies:

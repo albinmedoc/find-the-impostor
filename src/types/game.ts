@@ -1,4 +1,4 @@
-import { Locale } from "../config/language";
+import type { Locale } from "../config/language";
 
 export type Difficulty = "easy" | "medium" | "hard";
 
@@ -35,6 +35,7 @@ export interface GameState {
   selectedCategories: string[];
   customCategory: string;
   difficulty: Difficulty;
+  language: Locale;
   showHintsToImpostors: boolean;
   currentRevealIndex: number;
   gameStarted: boolean;
