@@ -198,10 +198,18 @@ export const useGameStore = create<GameStore>()(
           }),
         );
 
+        // Fisher-Yates shuffle for fair random selection
         const shuffledIndexes = Array.from(
           { length: gameState.totalPlayers },
           (_, i) => i,
-        ).sort(() => Math.random() - 0.5);
+        );
+        for (let i = shuffledIndexes.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledIndexes[i], shuffledIndexes[j]] = [
+            shuffledIndexes[j],
+            shuffledIndexes[i],
+          ];
+        }
 
         for (let i = 0; i < gameState.impostorCount; i++) {
           players[shuffledIndexes[i]].role = "impostor";
