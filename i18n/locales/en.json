@@ -65,6 +65,7 @@
   "ResultsPhase": {
     "results": "Results",
     "theWordWas": "The Word Was",
+    "revealWord": "Reveal Word",
     "newGame": "New Game",
     "category": "Category"
   },

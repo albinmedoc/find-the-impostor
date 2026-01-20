@@ -65,6 +65,7 @@
   "ResultsPhase": {
     "results": "Resultat",
     "theWordWas": "Ordet Var",
+    "revealWord": "Avslöja Ord",
     "newGame": "Nytt Spel",
     "category": "Kategori"
   },

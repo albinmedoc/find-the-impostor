@@ -1,13 +1,15 @@
 import { Button } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import { useGameStore } from "@/src/stores/game-store";
-import { RotateCcw } from "lucide-react";
+import { Eye, RotateCcw } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function ResultsPhase() {
   const { gameState, newGame } = useGameStore();
   const t = useTranslations("ResultsPhase");
   const impostors = gameState.players.filter(p => p.role === "impostor");
+  const [isWordRevealed, setIsWordRevealed] = useState(false);
 
   return (
     <div className="flex h-dvh items-center justify-center p-6 text-white">
@@ -20,9 +22,19 @@ export function ResultsPhase() {
           <p className="tracking-wider text-zinc-500 uppercase">
             {t("theWordWas")}
           </p>
-          <p className="text-3xl font-light text-blue-400">
-            {gameState.currentWord}
-          </p>
+          {isWordRevealed ? (
+            <p className="text-3xl font-light text-blue-400">
+              {gameState.currentWord}
+            </p>
+          ) : (
+            <Button
+              onClick={() => setIsWordRevealed(true)}
+              className="rounded-2xl border border-blue-500/20 bg-blue-500/10 px-8 py-4 text-lg font-light text-blue-400 backdrop-blur-sm transition-all duration-200 hover:border-blue-500/30 hover:bg-blue-500/20"
+            >
+              <Eye className="mr-3 h-5 w-5" />
+              {t("revealWord")}
+            </Button>
+          )}
         </div>
 
         <Separator className="bg-zinc-800" />
