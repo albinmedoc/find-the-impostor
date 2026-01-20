@@ -31,7 +31,6 @@ interface GameStore {
   nextRevealPlayer: () => void;
   startDiscussion: () => void;
   endGame: () => void;
-  newGame: () => void;
   setPhase: (phase: GameState["phase"]) => void;
 }
 
@@ -265,37 +264,6 @@ export const useGameStore = create<GameStore>()(
       endGame: () => {
         set(state => ({
           gameState: { ...state.gameState, phase: "results" },
-        }));
-      },
-
-      newGame: async () => {
-        const { gameState } = get();
-
-        const randomCategory =
-          gameState.selectedCategories[
-            Math.floor(Math.random() * gameState.selectedCategories.length)
-          ];
-        const wordWithHints = await getRandomWordWithHints(
-          randomCategory,
-          gameState.language,
-          gameState.difficulty,
-        );
-
-        console.log(
-          `Starting game with category: ${randomCategory}, word: ${
-            wordWithHints.word
-          }, hints: ${wordWithHints.hints.join(", ")}`,
-        );
-        set(state => ({
-          gameState: {
-            ...state.gameState,
-            phase: "wordreveal",
-            gameStarted: true,
-            currentWord: wordWithHints.word,
-            currentHints: wordWithHints.hints,
-            currentCategory: randomCategory,
-            currentRevealIndex: 0,
-          },
         }));
       },
     }),

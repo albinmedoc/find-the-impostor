@@ -7,11 +7,13 @@ import WordRevealPhase from "./_phases/word-reveal-phase";
 import { Button } from "@/src/components/ui/button";
 import { useGameStore } from "@/src/stores/game-store";
 import { ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Game() {
-  const { gameState, newGame, setPhase, _hasHydrated } = useGameStore();
+  const { gameState, startGame, setPhase, _hasHydrated } = useGameStore();
+  const t = useTranslations("SetupPhase");
   const router = useRouter();
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function Game() {
     if (gameState.phase === "setup") {
       router.push("/");
     } else {
-      newGame();
+      startGame(t);
     }
   };
 

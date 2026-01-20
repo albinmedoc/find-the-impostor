@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 export function ResultsPhase() {
-  const { gameState, newGame } = useGameStore();
+  const { gameState, startGame } = useGameStore();
   const t = useTranslations("ResultsPhase");
   const impostors = gameState.players.filter(p => p.role === "impostor");
   const [isWordRevealed, setIsWordRevealed] = useState(false);
@@ -60,7 +60,7 @@ export function ResultsPhase() {
         <Separator className="bg-zinc-800" />
 
         <Button
-          onClick={newGame}
+          onClick={() => startGame(t)}
           className="w-full rounded-2xl border border-white/20 bg-white/10 px-8 py-6 text-lg font-light text-white backdrop-blur-sm transition-all duration-200 hover:border-white/30 hover:bg-white/20"
         >
           <RotateCcw className="mr-3 h-5 w-5" />
